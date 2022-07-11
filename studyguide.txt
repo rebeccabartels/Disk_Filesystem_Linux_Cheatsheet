@@ -1,0 +1,110 @@
+Coding Guru 
+CompTIA Linux+ Disk and File Management Course
+2 Hours 8 Minutes 
+
+1. Create Partitions and Filesystems 
+fdisk -l 
+	fdisk utility lists available disks
+mkfs -t ext4 /dev/sdb1 
+	format available /dev/sdb1
+fdisk /dev/sdb 
+	command to initiate disk creation utility 
+mkreiserfs /dev/sdb2 
+	make reiser type file system 
+swapon -s 
+	low level command to create multiple ext type filesystems 
+mkswap /dev/sdb2
+	make a swap disk 
+MBR disks 
+	1. Can be up to 2TB
+	2. Managed with fdisk command 
+2. Parted and GPT Disks
+GPT can have up to 128 disk partitions 
+
+parted 
+	the command to work with GPT disks (can also use gdisk)
+mklabel gpt 
+	command to label new partition as gpt 
+mkpart primary 
+	command to create primary partition. 
+mkfs 
+	format new part to be usable. 
+
+RaiserFS vs BTree 
+Raiser: replaced by ext3 and ext4 as default fs for many linux distros 
+ReiserFS is an example of a journalling filesystem that tracks filesystem changes
+Use transation log to commit transactions to disk 
+BTree: snapshots and traditional backups, supports pooling and scalability, checksums, copyonwrite functionality
+
+debugfs 
+	cmd to get list of deleted files from filesystem. 
+
+4. Verify Filesystem Integrity 
+
+fsck /dev/sdd1 
+	verify integrity of filesystem, but will get warning unless you umount first
+umount /dev/sdd1 
+	unmount filesystem so that you can perform fsck utility. 
+e2fsck
+	checks integrity for device (ext2,3,4)
+tune2fs /dev/sdd1 -L "log_files"
+	make changes /tune properties of existing filesystems, here the -L modifies disk volume 
+xfs_check /dev/sdc1 
+	check xfs filesystems 
+mount /dev/sdc1 /xfstemp/ 
+	mounts at a certain location
+xfs_info /dev/sdc1 
+	retrieve info on mounted fs 
+dumpe2fs /dev/sdb1 | more 
+	display info on ext. 2,3,4 fs
+
+5. Monitor Free Space and inodes 
+du 
+	disk usage - recursively goes through all files by itself. 
+du /directory 
+	will go through the directory in question to yield usage 
+du -ah
+	fetches all entries and makes them human readable 
+du --exclude="*.txt" 
+	excludes .txt files. 
+df -h
+	disk free human readable 
+df -i 
+	disk free inode info 
+
+5. Fixing Simple Filesystem Problems 
+
+fsck /dev/sdd1 (remember to unmount first with umount!) 
+	can also use e2fsck for e2 fs 
+debugfs /dev/sdd1 
+	advanced mode, often used by developers. 
+
+When you want to mount a fs, you must mount it to a subdirectory 
+1. mkdir tempmount 
+	when you want to mount a fs on disk, you must mount on subdir (unlike windows that uses drive letters)
+2. change directory to /tempmount and check to see if anything is there is ls 
+3. mount /dev/sdd1 /tempmount 
+	mount disk device to the mount point subdirectory, can use -r for read only if you want. 
+4. cd /tempmount and ls will show content in there 
+5. mount with no parameters will show you what is currently mounted, you should see your new mounted directory at the bottom 
+6. umount /tempmount/ (uses folder reference) if you're in directory, you won't be able to unmount
+once unmounted, when you check 'mount', you won't see the new filesystem. 
+
+6. Configuring Automatic Mounting of Filesystem 
+
+mount /dev/sdd1 /tempmount 
+Configure automatic mounting, so when linux boots, it will mount automatically
+
+gedit /etc/fstab 
+to physically mount the disk in text editor gedit 
+can test that it works by rebooting or...
+mount -a 
+references /etc/fstab and if anything is not currently mounted, mount it now. 
+
+
+
+	
+
+
+
+
